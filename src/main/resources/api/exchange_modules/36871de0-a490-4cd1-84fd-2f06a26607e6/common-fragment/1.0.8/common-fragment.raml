@@ -1,0 +1,15 @@
+#%RAML 1.0 Library
+usage: Common library
+
+traits:
+  common-header: !include trait/common-headers-trait.raml
+  data-header: !include trait/data-header-trait.raml
+  authorization-header: !include trait/authorization-header-trait.raml
+  common-error: !include trait/common-error-trait.raml
+
+types:
+  request-recordPayment: !include datatype/request-recordPayment-dataType.raml
+  response-recordPayment: !include datatype/response-recordPayment-dataType.raml
+  success-response: !include datatype/success-response-dataType.raml
+  
+

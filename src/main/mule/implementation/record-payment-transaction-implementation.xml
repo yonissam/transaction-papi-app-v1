@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="record-payment-transaction-implementationFlow" doc:id="4d5ffe6c-824a-4875-8dd1-09c42a2696ea" >
+		<logger level="INFO" doc:name="Payment Transactions Call Start Logger" doc:id="ef1fb6c5-3ac4-47d1-86fe-f23177d0d2d7" message="#[%dw 2.0&#10;output application/json indent = false&#10;---&#10;{&#10;    TimeStam: (now() &gt;&gt; &quot;EST&quot;) as String {format: &quot;yyyy-MM-dd'T'hh:mm:ss&quot;},&#10;    TransactionId: vars.transactionId,&#10;    AppName: app.name,&#10;    FlowName: flow.name, &#10;    BusinessProcessName: &quot;Transaction Process&quot;,&#10;    Category: &quot;Payment&quot;,&#10;    OriginatingApplication: &quot;Process API&quot;,&#10;    DestinationApplication: &quot;Transaction System API&quot;,&#10;    PloicyNumber: vars.requestData.body.recordPaymentTransactionRequest.transactionDetails.policyNumber,&#10;    TxnState: &quot;Request to Transaction System API&quot;&#10;&#10;}]" />
+		<scatter-gather doc:name="Scatter-Gather" doc:id="592f643a-54fd-4668-8c73-4182565c5c41" >
+			<route >
+				<logger level="INFO" doc:name="Payment Reference Id Call Start Logger" doc:id="e3621b06-e86e-46cd-9803-20d6441a0012" message="#[%dw 2.0&#10;output application/json indent = false&#10;---&#10;{&#10;    TimeStam: (now() &gt;&gt; &quot;EST&quot;) as String {format: &quot;yyyy-MM-dd'T'hh:mm:ss&quot;},&#10;    TransactionId: vars.transactionId,&#10;    AppName: app.name,&#10;    FlowName: flow.name, &#10;    BusinessProcessName: &quot;Transaction Process&quot;,&#10;    Category: &quot;Payment&quot;,&#10;    OriginatingApplication: &quot;Experience API&quot;,&#10;    DestinationApplication: &quot;Payment Reference System API&quot;,&#10;    PloicyNumber: vars.requestData.body.recordPaymentTransactionRequest.transactionDetails.policyNumber,&#10;    TxnState: &quot;Request to Payment Reference System API&quot;&#10;&#10;}]" />
+				<http:request method="GET" doc:name="Payment Reference Id Request" doc:id="44d24421-13e2-4830-afc5-b2f2bbcb5a69" config-ref="HTTP_Request_configuration_Transaction_Sapi" path="${transaction.sapi.endpoint_paymentReference}" responseTimeout="60000">
+					<http:body ><![CDATA[#[output application/json
+---
+vars.requestData.body]]]></http:body>
+					<http:headers ><![CDATA[#[output application/java
+---
+{
+	"x-alpbnk-msgid" : "hdsfhjdhjxbv859sjdf76433746bbd123456",
+	"x-alpbnk-clientId" : "hsdfgysdhfcdshf37er6twgsdhfjcd",
+	"x-alpbnk-clientSecret" : "dsgfhaegur457r6ewsewegrfjesh"
+}]]]></http:headers>
+		</http:request>
+				<logger level="INFO" doc:name="Payment Reference Id Call End Logger" doc:id="01bda6a3-a8b6-46a3-b7f9-ac803a64f7d7" message="#[%dw 2.0&#10;output application/json indent = false&#10;---&#10;{&#10;    TimeStam: (now() &gt;&gt; &quot;EST&quot;) as String {format: &quot;yyyy-MM-dd'T'hh:mm:ss&quot;},&#10;    TransactionId: vars.transactionId,&#10;    AppName: app.name,&#10;    FlowName: flow.name, &#10;    BusinessProcessName: &quot;Transaction Process&quot;,&#10;    Category: &quot;Payment&quot;,&#10;    OriginatingApplication: &quot;Experience API&quot;,&#10;    DestinationApplication: &quot;Payment Reference System API&quot;,&#10;    PloicyNumber: vars.requestData.body.recordPaymentTransactionRequest.transactionDetails.policyNumber,&#10;    TxnState: &quot;Response from Payment Reference System API&quot;,&#10;    ProcessTime: ((now() &gt;&gt; &quot;EST&quot;) as String {format: &quot;yyyy-MM-dd'T'hh:mm:ss&quot;}) -vars.startTime&#10;&#10;}]" />
+			</route>
+			<route >
+				<logger level="INFO" doc:name="Exchange Rate Call Start Logger" doc:id="a28ae258-eecd-4e5d-95f4-e61365bd185c" message="#[%dw 2.0&#10;output application/json indent = false&#10;---&#10;{&#10;    TimeStam: (now() &gt;&gt; &quot;EST&quot;) as String {format: &quot;yyyy-MM-dd'T'hh:mm:ss&quot;},&#10;    TransactionId: vars.transactionId,&#10;    AppName: app.name,&#10;    FlowName: flow.name, &#10;    BusinessProcessName: &quot;Transaction Process&quot;,&#10;    Category: &quot;Payment&quot;,&#10;    OriginatingApplication: &quot;Experience API&quot;,&#10;    DestinationApplication: &quot;Exchange Rate API&quot;,&#10;    PloicyNumber: vars.requestData.body.recordPaymentTransactionRequest.transactionDetails.policyNumber,&#10;    TxnState: &quot;Request to Exchange Rate API&quot;&#10;&#10;}]" />
+				<http:request method="GET" doc:name="Exchange Rate Request" doc:id="0672721c-cd86-407e-b26c-acdc9757577d" config-ref="HTTP_Request_configuration_Transaction_Sapi" path="${transaction.sapi.endpoint_exchangeRate}" responseTimeout="60000">
+					<http:body ><![CDATA[#[output application/json
+---
+vars.requestData.body]]]></http:body>
+					<http:headers ><![CDATA[#[output application/java
+---
+{
+	"x-alpbnk-msgid" : "hdsfhjdhjxbv859sjdf76433746bbd123456",
+	"x-alpbnk-clientSecret" : "dsgfhaegur457r6ewsewegrfjesh",
+	"x-alpbnk-clientId" : "hsdfgysdhfcdshf37er6twgsdhfjcd"
+}]]]></http:headers>
+					<http:query-params ><![CDATA[#[output application/java
+---
+{
+	"symbols" : "ETB",
+	"base" : "USD"
+}]]]></http:query-params>
+		</http:request>
+				<logger level="INFO" doc:name="Exchange Rate Call End Logger" doc:id="49fb3642-5e8f-4d1d-ba19-eb335ffc916c" message="#[%dw 2.0&#10;output application/json indent = false&#10;---&#10;{&#10;    TimeStam: (now() &gt;&gt; &quot;EST&quot;) as String {format: &quot;yyyy-MM-dd'T'hh:mm:ss&quot;},&#10;    TransactionId: vars.transactionId,&#10;    AppName: app.name,&#10;    FlowName: flow.name, &#10;    BusinessProcessName: &quot;Transaction Process&quot;,&#10;    Category: &quot;Payment&quot;,&#10;    OriginatingApplication: &quot;Experience API&quot;,&#10;    DestinationApplication: &quot;Exchange Rate API&quot;,&#10;    PloicyNumber: vars.requestData.body.recordPaymentTransactionRequest.transactionDetails.policyNumber,&#10;    TxnState: &quot;Response from Exchange Rate API&quot;,&#10;    ProcessTime: ((now() &gt;&gt; &quot;EST&quot;) as String {format: &quot;yyyy-MM-dd'T'hh:mm:ss&quot;}) - vars.startTime&#10;&#10;}]" />
+			</route>
+		</scatter-gather>
+		<ee:transform doc:name="Transform Message" doc:id="40f67c2d-6636-41f5-bf02-1026d59edd5c">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	orderId: vars.requestData.body.recordPaymentTransactionRequest.orderId,
+	paymentReferenceId: payload."0".payload.paymentReferenceId,
+	Amount: ((payload."1".payload.exchangeRate) * (vars.requestData.body.recordPaymentTransactionRequest.netPremiumAmount)) as String
+	
+}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables>
+				<ee:set-variable variableName="httpStatus"><![CDATA[201]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<logger level="INFO" doc:name="Checkout Call Start Logger" doc:id="cac072eb-e357-485c-9fd4-652fed7437ac" message="#[%dw 2.0&#10;output application/json indent = false&#10;---&#10;{&#10;    TimeStam: (now() &gt;&gt; &quot;EST&quot;) as String {format: &quot;yyyy-MM-dd'T'hh:mm:ss&quot;},&#10;    TransactionId: vars.transactionId,&#10;    AppName: app.name,&#10;    FlowName: flow.name, &#10;    BusinessProcessName: &quot;Transaction Process&quot;,&#10;    Category: &quot;Payment&quot;,&#10;    OriginatingApplication: &quot;Experience API&quot;,&#10;    DestinationApplication: &quot;Checkout API&quot;,&#10;    PloicyNumber: vars.requestData.body.recordPaymentTransactionRequest.transactionDetails.policyNumber,&#10;    TxnState: &quot;Request to Checkout API&quot;&#10;&#10;}]" />
+		<http:request method="POST" doc:name="Checkout Request" doc:id="af828489-929f-4917-84b4-c5fa207b28b7" config-ref="HTTP_Request_configuration_Transaction_Sapi" path="${transaction.sapi.endpoint_checkout}" target="checkout" responseTimeout="60000">
+			<http:body><![CDATA[#[output application/json
+---
+payload]]]></http:body>
+			<http:headers ><![CDATA[#[output application/java
+---
+{
+	"Accept" : "application/json",
+	"x-alpbnk-msgid" : "hdsfhjdhjxbv859sjdf76433746bbd123456",
+	"Accept-Language" : "en-US",
+	"Content-Type" : "application/json",
+	"x-alpbnk-clientSecret" : "dsgfhaegur457r6ewsewegrfjesh",
+	"x-alpbnk-clientId" : "hsdfgysdhfcdshf37er6twgsdhfjcd"
+}]]]></http:headers>
+		</http:request>
+		<logger level="INFO" doc:name="Checkout Call End Logger" doc:id="1490ee2b-1f83-4963-91cf-69245a649f1c" message="#[%dw 2.0&#10;output application/json indent = false&#10;---&#10;{&#10;    TimeStam: (now() &gt;&gt; &quot;EST&quot;) as String {format: &quot;yyyy-MM-dd'T'hh:mm:ss&quot;},&#10;    TransactionId: vars.transactionId,&#10;    AppName: app.name,&#10;    FlowName: flow.name, &#10;    BusinessProcessName: &quot;Transaction Process&quot;,&#10;    Category: &quot;Payment&quot;,&#10;    OriginatingApplication: &quot;Experience API&quot;,&#10;    DestinationApplication: &quot;Checkout API&quot;,&#10;    PloicyNumber: vars.requestData.body.recordPaymentTransactionRequest.transactionDetails.policyNumber,&#10;    TxnState: &quot;Response from Checkout API&quot;,&#10;    ProcessTime: ((now() &gt;&gt; &quot;EST&quot;) as String {format: &quot;yyyy-MM-dd'T'hh:mm:ss&quot;}) -vars.startTime&#10;&#10;}]" />
+		<logger level="INFO" doc:name="Record Payment Call Start Logger" doc:id="ff63b1d0-400f-4564-b370-84f1749933a2" message="#[%dw 2.0&#10;output application/json indent = false&#10;---&#10;{&#10;    TimeStam: (now() &gt;&gt; &quot;EST&quot;) as String {format: &quot;yyyy-MM-dd'T'hh:mm:ss&quot;},&#10;    TransactionId: vars.transactionId,&#10;    AppName: app.name,&#10;    FlowName: flow.name, &#10;    BusinessProcessName: &quot;Transaction Process&quot;,&#10;    Category: &quot;Payment&quot;,&#10;    OriginatingApplication: &quot;Experience API&quot;,&#10;    DestinationApplication: &quot;Record Payment System API&quot;,&#10;    PloicyNumber: vars.requestData.body.recordPaymentTransactionRequest.transactionDetails.policyNumber,&#10;    TxnState: &quot;Request to Record Payment System API&quot;&#10;&#10;}]" />
+		<http:request method="POST" doc:name="Record Payment Request" doc:id="3a4263d3-a7d6-49ba-a7e3-0144415b2eba" config-ref="HTTP_Request_configuration_Transaction_Sapi" path="${transaction.sapi.endpoint_recordPayment}" responseTimeout="60000">
+			<http:body><![CDATA[#[output application/json
+---
+{
+	recordPaymentTransactionRequest: {
+		paymentReferenceId: payload.paymentReferenceId,
+		status: vars.checkout.status,
+		transactionDetails: {
+			orderId: vars.requestData.body.recordPaymentTransactionRequest.orderId,
+			policyNumber: vars.requestData.body.recordPaymentTransactionRequest.policyNumber,
+			entityCode: vars.requestData.body.recordPaymentTransactionRequest.entityCode,
+			language: vars.requestData.body.recordPaymentTransactionRequest.language,
+			transactionAmount: payload.Amount,
+			gateway: vars.requestData.body.recordPaymentTransactionRequest.gateway,
+			cardType: vars.requestData.body.recordPaymentTransactionRequest.cardType,
+			coBrandFlag: vars.requestData.body.recordPaymentTransactionRequest.coBrandFlag,
+			serviceChargeRate: vars.requestData.body.recordPaymentTransactionRequest.serviceChargeRate,
+			netPremiumAmount: vars.requestData.body.recordPaymentTransactionRequest.netPremiumAmount,
+			returnUrl: vars.requestData.body.recordPaymentTransactionRequest.returnUrl,
+			cancelUrl: vars.requestData.body.recordPaymentTransactionRequest.cancelUrl
+			}
+	}
+}]]]></http:body>
+			<http:headers ><![CDATA[#[output application/java
+---
+{
+	"Accept" : "application/json",
+	"x-alpbnk-msgid" : "hdsfhjdhjxbv859sjdf76433746bbd123456",
+	"Accept-Language" : "en-US",
+	"Content-Type" : "application/json",
+	"x-alpbnk-clientSecret" : "dsgfhaegur457r6ewsewegrfjesh",
+	"x-alpbnk-clientId" : "hsdfgysdhfcdshf37er6twgsdhfjcd"
+}]]]></http:headers>
+		</http:request>
+		<logger level="INFO" doc:name="Record Payment Call End Logger" doc:id="a3abe9f5-11b8-4fc8-90d2-c6786f14b903" message="#[%dw 2.0&#10;output application/json indent = false&#10;---&#10;{&#10;    TimeStam: (now() &gt;&gt; &quot;EST&quot;) as String {format: &quot;yyyy-MM-dd'T'hh:mm:ss&quot;},&#10;    TransactionId: vars.transactionId,&#10;    AppName: app.name,&#10;    FlowName: flow.name, &#10;    BusinessProcessName: &quot;Transaction Process&quot;,&#10;    Category: &quot;Payment&quot;,&#10;    OriginatingApplication: &quot;Experience API&quot;,&#10;    DestinationApplication: &quot;Record Payment System API&quot;,&#10;    PloicyNumber: vars.requestData.body.recordPaymentTransactionRequest.transactionDetails.policyNumber,&#10;    TxnState: &quot;Response from Record Payment System API&quot;,&#10;    ProcessTime: ((now() &gt;&gt; &quot;EST&quot;) as String {format: &quot;yyyy-MM-dd'T'hh:mm:ss&quot;}) -vars.startTime&#10;&#10;}]" />
+		<ee:transform doc:name="Transform Message" doc:id="0e84e79b-a2d4-4133-a71f-fea1fb90e1e5" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Payment Transactions Call End Logger" doc:id="461dda26-e9c9-4ac4-94eb-f29e4c381da1" message="#[%dw 2.0&#10;output application/json indent = false&#10;---&#10;{&#10;    TimeStam: (now() &gt;&gt; &quot;EST&quot;) as String {format: &quot;yyyy-MM-dd'T'hh:mm:ss&quot;},&#10;    TransactionId: vars.transactionId,&#10;    AppName: app.name,&#10;    FlowName: flow.name, &#10;    BusinessProcessName: &quot;Transaction Process&quot;,&#10;    Category: &quot;Payment&quot;,&#10;    OriginatingApplication: &quot;Process API&quot;,&#10;    DestinationApplication: &quot;Transaction System API&quot;,&#10;    PloicyNumber: vars.requestData.body.recordPaymentTransactionRequest.transactionDetails.policyNumber,&#10;    TxnState: &quot;Response from Transaction System API&quot;,&#10;    ProcessTime: ((now() &gt;&gt; &quot;EST&quot;) as String {format: &quot;yyyy-MM-dd'T'hh:mm:ss&quot;}) -vars.startTime&#10;&#10;}]" />
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="6fa215d0-956b-4c28-91bf-31b5f15c69da" type="HTTP:BAD_REQUEST, HTTP:CONNECTIVITY, HTTP:NOT_FOUND, HTTP:RETRY_EXHAUSTED">
+				<logger level="INFO" doc:name="Logger" doc:id="e2560ed0-81ee-4172-81c2-3ed012ae3275" message="#[%dw 2.0&#10;output application/json indent = false&#10;---&#10;{&#10;    TimeStam: (now() &gt;&gt; &quot;EST&quot;) as String {format: &quot;yyyy-MM-dd'T'hh:mm:ss&quot;},&#10;    TransactionId: vars.transactionId,&#10;    AppName: app.name,&#10;    FlowName: flow.name, &#10;    BusinessProcessName: &quot;Transaction Process&quot;,&#10;    Category: &quot;Payment&quot;,&#10;    OriginatingApplication: &quot;Process API&quot;,&#10;    DestinationApplication: &quot;Payment Gateway&quot;,&#10;    PloicyNumber: vars.requestData.body.recordPaymentTransactionRequest.transactionDetails.policyNumber,&#10;    TxnState: &quot;Error&quot;&#10;&#10;}]" />
+				<ee:transform doc:name="Transform Message" doc:id="d1d6efca-1544-459b-93c4-9eb590e6804d" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+   "msg":"failed operation",
+   "code":500,
+   "eventId": vars.transactionId,
+   "error":{
+      "type":"HTTP Request Error",
+      "title":error.errorType[0],
+      "details":error.description
+   }
+}
+]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+</mule>

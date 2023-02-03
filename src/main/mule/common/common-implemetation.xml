@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<sub-flow name="initialize-request-data-subFlow" doc:id="478a995b-2712-4c8d-ae10-723dd1f32472" >
+		<ee:transform doc:name="Initialize request transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{}]]></ee:set-payload>
+            </ee:message>
+			<ee:variables>
+				<ee:set-variable variableName="requestData"><![CDATA[%dw 2.0
+output application/json
+---
+{
+	body : payload,
+	queryParams: attributes.queryParams,
+	uriParams: attributes.uriParams,
+	headers: attributes.headers
+}]]></ee:set-variable>
+				<ee:set-variable variableName="startTime"><![CDATA[%dw 2.0
+output application/json
+---
+(now() >> "EST") as String {format: "yyyy-MM-dd'T'hh:mm:ss"}]]></ee:set-variable>
+				<ee:set-variable variableName="transactionId" ><![CDATA[attributes.headers."x-alpbnk-msgid"]]></ee:set-variable>
+			</ee:variables>
+        </ee:transform>
+	</sub-flow>
+</mule>
