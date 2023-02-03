@@ -27,7 +27,7 @@ pipeline {
 	}
       
       steps {
-            sh 'mvn -U -V -e -B -DskipTests -Pdev deploy -DmuleDeploy -Danypoint.username="%ANYPOINT_CREDS_USR%" -Danypoint.password="%ANYPOINT_CREDS_PSW%" -Danypoint.platform.client_id="%CLIENT_ID%" -Danypoint.platform.client_secret="%CLIENT_SECRET%"'
+            sh 'mvn -U -V -e -B -DskipTests -Pdev deploy -DmuleDeploy -Danypoint.username=$ANYPOINT_CREDS_USR -Danypoint.password=$ANYPOINT_CREDS_PSW -Danypoint.platform.client_id=$CLIENT_ID -Danypoint.platform.client_secret=$CLIENT_SECRET'
       }
     }
   
