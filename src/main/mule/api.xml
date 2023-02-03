@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
+    <flow name="api-main">
+        <http:listener path="/api/*" config-ref="api-httpListenerConfig">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body><![CDATA[#[payload]]]></http:body>
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:router config-ref="api-config"/>
+		<error-handler ref="global-errorError_Handler_APIKit" />
+    </flow>
+    <flow name="api-console">
+        <http:listener path="/console/*" config-ref="api-httpListenerConfig">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body><![CDATA[#[payload]]]></http:body>
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:console config-ref="api-config"/>
+		<error-handler ref="global-errorError_Handler_APIKit" />
+    </flow>
+    <flow name="post:\payments\paymentTransactions:application\json:api-config">
+		<flow-ref doc:name="Initialize Flow Reference" doc:id="e4a0d049-1ce1-4561-a12e-18cef3955166" name="initialize-request-data-subFlow" />
+		<logger level="INFO" doc:name="Start Logger" doc:id="16e9e5fd-9466-43c6-9bb0-e46d276183a6" message='#[%dw 2.0&#10;output application/json indent = false&#10;---&#10;{&#10;    TimeStam: vars.startTime,&#10;    TransactionId: vars.transactionId,&#10;    AppName: app.name,&#10;    FlowName: flow.name, &#10;    BusinessProcessName: "Transaction Process",&#10;    Category: "Payment",&#10;    OriginatingApplication: "Experience API",&#10;    DestinationApplication: "Transaction System API",&#10;    PloicyNumber: vars.requestData.body.recordPaymentTransactionRequest.transactionDetails.policyNumber,&#10;    TxnState: "START"&#10;&#10;}]' />
+		<flow-ref doc:name="implementationFlow Reference" doc:id="ac94559b-f082-4438-934c-d7701e14a72c" name="record-payment-transaction-implementationFlow" />
+		<logger level="INFO" doc:name="End Logger" doc:id="1e214d44-a5c9-4b03-9162-3db99c165b57" message="#[%dw 2.0&#10;output application/json indent = false&#10;---&#10;{&#10;    TimeStam: (now() &gt;&gt; &quot;EST&quot;) as String {format: &quot;yyyy-MM-dd'T'hh:mm:ss&quot;},&#10;    TransactionId: vars.transactionId,&#10;    AppName: app.name,&#10;    FlowName: flow.name, &#10;    BusinessProcessName: &quot;Transaction Process&quot;,&#10;    Category: &quot;Payment&quot;,&#10;    OriginatingApplication: &quot;Experience API&quot;,&#10;    DestinationApplication: &quot;Transaction System API&quot;,&#10;    PloicyNumber: vars.requestData.body.recordPaymentTransactionRequest.transactionDetails.policyNumber,&#10;    TxnState: &quot;END&quot;,&#10;    ProcessTime: ((now() &gt;&gt; &quot;EST&quot;) as String {format: &quot;yyyy-MM-dd'T'hh:mm:ss&quot;}) -vars.startTime&#10;&#10;}]" />
+    </flow>
+</mule>

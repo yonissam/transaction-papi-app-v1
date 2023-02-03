@@ -1,0 +1,53 @@
+#%RAML 1.0 DataType
+
+type: object
+properties:
+  orderId:
+    required: true
+    type: string
+    example: "Order001"
+  policyNumber:
+    required: true
+    type: string
+    example: "303-3966783"
+  entityCode:
+    required: true
+    type: string
+    example: "LHK"
+  language:
+    required: true
+    type: string
+    example: "en"
+  transactionAmount:
+    required: true
+    type: string
+    example: "15991.24"
+  gateway:
+    required: true
+    type: string
+    example: "MPGS"
+  cardType:
+    required: true
+    type: string
+    example: "master"
+  coBrandFlag:
+    required: true
+    type: string
+    example: "N"
+  serviceChargeRate:
+    required: true
+    type: string
+    example: "0.025"
+  netPremiumAmount:
+    required: true
+    type: string
+    example: "15601.21"
+  returnUrl:
+    required: true
+    type: string
+    example: "abc.com/##paymentReferenceId##"
+  cancelUrl:
+    required: true
+    type: string
+    example: "abc.com/##paymentReferenceId##"
+    

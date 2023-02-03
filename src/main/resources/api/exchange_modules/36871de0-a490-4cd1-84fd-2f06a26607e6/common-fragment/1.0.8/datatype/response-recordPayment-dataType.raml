@@ -1,0 +1,33 @@
+#%RAML 1.0 DataType
+
+type: object
+properties:
+  message:
+    required: true
+    type: string
+    example: "Success"
+  transactionId:
+    required: true
+    type: string
+    example: "EMR0100000295510"
+  sessionId:
+    required: true
+    type: string
+    example: "SESSION0002810831519K4184996N93"
+  successIndicatior:
+    required: true
+    type: string
+    example: "8bae1a8ffce149f9"
+  returnUrl:
+    required: true
+    type: string
+    example: "abc.com/##paymentReferenceId##"
+  cancelUrl:
+    required: true
+    type: string
+    example: "abc.com/##paymentReferenceId##"
+  version:
+    required: true
+    type: string
+    example: "3a2080f201"
+      

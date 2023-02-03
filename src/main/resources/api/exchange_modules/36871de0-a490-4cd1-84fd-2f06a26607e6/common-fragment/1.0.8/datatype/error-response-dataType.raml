@@ -1,0 +1,35 @@
+#%RAML 1.0 DataType
+
+type: object
+properties:
+  msg:
+    required: true
+    type: string
+    example: "failed operation"
+  code:
+    required: true
+    type: integer
+    example: 400  
+  eventId:
+    description: This header will conatin unique id for each transaction. 
+    required: true
+    type: string
+    minLength: 36
+    maxLength: 36
+    example: "dbfhjsdb-hfb-do8ryt-876utt7-5ty364ol"
+  error:
+    required: true
+    type: object
+    properties:
+      type:
+        required: true
+        type: string
+        example: "BAD_REQUEST"
+      title:
+        required: true
+        type: string
+        example: "Invalid Request"
+      details:
+        required: true
+        type: string
+        example: "The input contains invalid data"

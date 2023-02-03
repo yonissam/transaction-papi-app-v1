@@ -1,0 +1,12 @@
+http:
+  port: "8082"
+  
+transaction:
+  sapi:
+    host: "66.228.35.64"
+    port: "8081"
+    endpoint_paymentReference: "/api/payments/referenceId"
+    endpoint_recordPayment: "/api/payments/paymentTransactions"
+    endpoint_checkout: "/api/payments/checkouts"
+    endpoint_exchangeRate: "/api/payments/exchangeRates"
+  
