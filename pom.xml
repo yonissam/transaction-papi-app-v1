@@ -30,9 +30,9 @@
 						<extensions>true</extensions>
 						<configuration>
 							<armDeployment>
-								<environment>develop</environment>
+								<environment>${environment}</environment>
 								<properties>
-									<mule.env>local</mule.env>
+									<mule.env>${mule.env}</mule.env>
 									<anypoint.platform.client_id>${anypoint.platform.client_id}</anypoint.platform.client_id>
 									<anypoint.platform.client_secret>${anypoint.platform.client_secret}</anypoint.platform.client_secret>
 								</properties>
@@ -53,9 +53,9 @@
 						<extensions>true</extensions>
 						<configuration>
 							<armDeployment>
-								<environment>test</environment>
+								<environment>${environment}</environment>
 								<properties>
-									<mule.env>local</mule.env>
+									<mule.env>${mule.env}</mule.env>
 									<anypoint.platform.client_id>${anypoint.platform.client_id}</anypoint.platform.client_id>
 									<anypoint.platform.client_secret>${anypoint.platform.client_secret}</anypoint.platform.client_secret>
 								</properties>
@@ -82,10 +82,10 @@
 					<armDeployment>
 						<muleVersion>4.4.0</muleVersion>
 						<uri>https://anypoint.mulesoft.com</uri>
-						<target>linode-server-2</target>
-						<targetType>server</targetType>
-						<username>yonissam4</username>
-						<password>YoniGeo2024!</password>
+						<target>${target}</target>
+						<targetType>${target.type}</targetType>
+						<username>${username}</username>
+						<password>${password}</password>
 						<properties>
 							<anypoint.platform.base_uri>https://anypoint.mulesoft.com</anypoint.platform.base_uri>
 							<anypoint.platform.analytics_base_uri>https://analytics-ingest.anypoint.mulesoft.com</anypoint.platform.analytics_base_uri>
