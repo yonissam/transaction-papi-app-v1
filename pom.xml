@@ -35,6 +35,8 @@
 									<mule.env>${mule.env}</mule.env>
 									<anypoint.platform.client_id>${anypoint.platform.client_id}</anypoint.platform.client_id>
 									<anypoint.platform.client_secret>${anypoint.platform.client_secret}</anypoint.platform.client_secret>
+									<anypoint.platform.base_uri>https://anypoint.mulesoft.com</anypoint.platform.base_uri>
+									<anypoint.platform.analytics_base_uri>https://analytics-ingest.anypoint.mulesoft.com</anypoint.platform.analytics_base_uri>
 								</properties>
 							</armDeployment>
 						</configuration>
@@ -58,6 +60,8 @@
 									<mule.env>${mule.env}</mule.env>
 									<anypoint.platform.client_id>${anypoint.platform.client_id}</anypoint.platform.client_id>
 									<anypoint.platform.client_secret>${anypoint.platform.client_secret}</anypoint.platform.client_secret>
+									<anypoint.platform.base_uri>https://anypoint.mulesoft.com</anypoint.platform.base_uri>
+									<anypoint.platform.analytics_base_uri>https://analytics-ingest.anypoint.mulesoft.com</anypoint.platform.analytics_base_uri>
 								</properties>
 							</armDeployment>
 						</configuration>

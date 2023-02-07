@@ -3,7 +3,7 @@ http:
   
 transaction:
   sapi:
-    host: "35.221.56.54"
+    host: "52.146.0.204"
     port: "8081"
     endpoint_paymentReference: "/api/payments/referenceId"
     endpoint_recordPayment: "/api/payments/paymentTransactions"
