@@ -49,4 +49,4 @@ steps:
     mavenVersionOption: 'Default'
     effectivePomSkip: true
     sonarQubeRunAnalysis: false
-    goals: 'clean install package deploy $(MAVEN_OPTS) -DmuleDeploy  -Dusername=$(username) -Dpassword=$(password) -Dmule.env=$(mule.env)   -Dtarget=$(target) -Dtarget.type=$(target.type) -Denvironment=$(environment) -Danypoint.username=$(anypoint.username) -Danypoint.password=$(anypoint.password) -Danypoint.platform.client_id=$(anypoint.platform.client_id) -Danypoint.platform.client_secret=$(anypoint.platform.client_secret)'
+    goals: 'clean install package deploy $(MAVEN_OPTS)  -DmuleDeploy  -Dusername=$(username) -Dpassword=$(password) -Dmule.env=$(mule.env)  -Dtarget=$(target) -Dtarget.type=$(target.type) -Denvironment=$(environment) -Danypoint.username=$(anypoint.username) -Danypoint.password=$(anypoint.password) -Danypoint.platform.client_id=$(anypoint.platform.client_id) -Danypoint.platform.client_secret=$(anypoint.platform.client_secret)'
